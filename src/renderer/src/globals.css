@@ -1,0 +1,435 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* Desktop: fonts come from @fontsource (bundled, works offline) instead of next/font/google.
+ * These variables are what the web layout.tsx used to define. */
+:root {
+  --font-geist-sans: 'Geist Variable';
+  --font-geist-mono: 'Geist Mono Variable';
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-geist-sans), 'Geist Fallback';
+  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  color-scheme: dark;
+  --background: #090B13;
+  --foreground: #F6F7FB;
+  --card: #111526;
+  --card-foreground: #F6F7FB;
+  --popover: #111526;
+  --popover-foreground: #F6F7FB;
+  --primary: #7C4DFF;
+  --primary-foreground: #F6F7FB;
+  --muted: #252A40;
+  --muted-foreground: #8088A3;
+  --destructive: #FF5D73;
+  --border: #252A40;
+  --input: #0F1322;
+  --ring: #7C4DFF;
+  --radius: 0.625rem;
+  --sidebar: #0D1020;
+  --sidebar-foreground: #F6F7FB;
+  --sidebar-accent: #B5BDD3;
+  --sidebar-border: #1C2340;
+
+  /* Z-index scale — Tailwind v4 core không hỗ trợ theme hoá z-index qua @theme (khác với
+   * color/spacing/radius), nên khai báo biến CSS thường rồi dùng qua cú pháp arbitrary value
+   * `z-[var(--z-*)]`. Chỉ áp cho layer CẦN xếp chồng đúng thứ tự lẫn nhau trên toàn app (header/
+   * nav/dropdown/drawer/modal/toast) — không áp cho z-index cục bộ trong 1 component (vd lớp
+   * ảnh/badge chồng nhau trong 1 thumbnail scene-gallery), vì những chỗ đó chỉ cần thắng đúng
+   * sibling của chính nó, không cần liên thông với hệ thống layer toàn app. Không đổi giá trị
+   * số cho các layer đã đúng thứ tự từ trước — chỉ gom về 1 nguồn duy nhất. */
+  --z-header: 20;
+  --z-elevated: 30;
+  --z-drawer: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-top: 100;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #090B13;
+  --foreground: #F6F7FB;
+  --card: #111526;
+  --card-foreground: #F6F7FB;
+  --popover: #111526;
+  --popover-foreground: #F6F7FB;
+  --primary: #7C4DFF;
+  --primary-foreground: #F6F7FB;
+  --muted: #252A40;
+  --muted-foreground: #8088A3;
+  --destructive: #FF5D73;
+  --border: #252A40;
+  --input: #0F1322;
+  --ring: #7C4DFF;
+  --sidebar: #0D1020;
+  --sidebar-foreground: #F6F7FB;
+  --sidebar-accent: #B5BDD3;
+  --sidebar-border: #1C2340;
+}
+
+/* Light theme — override khi <html> có class .light (xem lib/theme.ts + hooks/use-theme.ts).
+ * Giữ cùng cấu trúc token/vai trò với dark, chỉ đổi giá trị màu — không đổi biến brand cam
+ * (bg-orange-500...) vì đó là literal Tailwind dùng cho CTA, không phải token theo theme. */
+.light {
+  color-scheme: light;
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #7C3AED;
+  --primary-foreground: #FFFFFF;
+  --muted: #F1F5F9;
+  --muted-foreground: #475569;
+  --destructive: #E11D48;
+  --border: #E2E8F0;
+  --input: #FFFFFF;
+  --ring: #7C3AED;
+  --sidebar: #F1F3F9;
+  --sidebar-foreground: #0F172A;
+  --sidebar-accent: #64748B;
+  --sidebar-border: #E2E8F0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --background: #090B13;
+    --foreground: #F6F7FB;
+    --card: #111526;
+    --card-foreground: #F6F7FB;
+    --popover: #111526;
+    --popover-foreground: #F6F7FB;
+    --primary: #7C4DFF;
+    --primary-foreground: #F6F7FB;
+    --muted: #252A40;
+    --muted-foreground: #8088A3;
+    --destructive: #FF5D73;
+    --border: #252A40;
+    --input: #0F1322;
+    --ring: #7C4DFF;
+    --sidebar: #0D1020;
+    --sidebar-foreground: #F6F7FB;
+    --sidebar-accent: #B5BDD3;
+    --sidebar-border: #1C2340;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+
+  /* Custom range input */
+  input[type='range'] {
+    cursor: pointer;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* @layer components (không phải utilities) — CHỦ Ý: các class này luôn bị kết hợp với utility
+ * ghi đè ở nơi dùng (vd `input-base pl-10` để chừa chỗ icon, `panel-card border-purple-500/20`
+ * để đổi màu viền). Tailwind v4 xếp layer components TRƯỚC utilities nên utility luôn thắng
+ * chắc chắn — để các class này ở layer utilities (như trước) khiến thứ tự thắng/thua giữa
+ * chúng và utility cùng layer phụ thuộc thứ tự sinh CSS không đoán trước được, gây bug thật:
+ * icon đè lên chữ vì pl-10 không thắng nổi px-4 có sẵn trong input-base (Newsletter/Tìm kiếm
+ * Blog). Bug tương tự có thể xảy ra với mọi utility khác kết hợp cùng class ở layer utilities. */
+@layer components {
+  /* Standard dark input */
+  .input-base {
+    @apply w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground
+           placeholder:text-muted-foreground/60
+           focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20
+           transition-colors duration-150;
+  }
+
+  .input-error {
+    @apply border-destructive/70 focus:border-destructive focus:ring-destructive/20;
+  }
+
+  /* Standard card panel */
+  .panel-card {
+    @apply bg-card border border-border rounded-xl p-6;
+  }
+}
+
+@layer utilities {
+  /* Section header label — reusable across all sections */
+  .section-label {
+    @apply text-xs font-bold text-primary uppercase tracking-widest;
+  }
+
+  /* Muted label inside cards */
+  .field-label {
+    @apply text-xs font-semibold text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Inline error message */
+  .field-error {
+    @apply flex items-center gap-1.5 text-xs text-destructive mt-1.5;
+  }
+
+  /* Clickable row */
+  .row-hover {
+    @apply transition-colors duration-150 hover:bg-muted/30;
+  }
+
+  /* Glow accent on primary elements */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(124, 77, 255, 0.15);
+  }
+
+  /* Ghost/secondary button — viền chuyển sang gradient xanh→tím + nền sáng nhẹ khi hover.
+   * border-color không nhận gradient trực tiếp nên dùng pseudo-element viền 1px + mask
+   * (content-box trừ padding-box) để chỉ lộ đúng phần viền, không phủ kín cả nền nút. */
+  .btn-ghost-gradient {
+    position: relative;
+    isolation: isolate;
+    transition: background-color 0.25s ease;
+  }
+  .btn-ghost-gradient:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  .btn-ghost-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to right, #3b82f6, #a855f7);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .btn-ghost-gradient:hover::before {
+    opacity: 1;
+  }
+
+  /* Spotlight card — quầng sáng tím chạy theo con trỏ (toạ độ đặt qua CSS custom property
+   * --spotlight-x/y trong SpotlightCard.tsx, tránh re-render React mỗi lần di chuột) + viền
+   * chuyển sang tím neon khi hover. KHÔNG dùng overflow:hidden ở đây — background của
+   * .spotlight-card-glow đã tự bo theo border-radius riêng của nó (background-clip mặc định
+   * border-box), overflow:hidden ở cha sẽ cắt mất badge tràn viền (vd "Tiết kiệm nhất" ở gói giá).
+   * `--lift` tách riêng vì thẻ có elevation cố định (gói giá nổi bật) không nên cộng dồn hover.
+   * `isolation: isolate` + glow z-index:-1 để quầng sáng luôn nằm DƯỚI nội dung thật mà không
+   * cần bọc children trong div phụ nào — bọc thêm div sẽ phá layout flex (vd flex-1 đẩy nút
+   * "Chọn gói này" xuống đáy card giá) vì lúc đó flex-col trên .spotlight-card không còn tác
+   * động trực tiếp lên các con thật (h3/p/ul/Link) nữa mà lên đúng 1 div bọc ngoài chúng. */
+  .spotlight-card {
+    position: relative;
+    isolation: isolate;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .spotlight-card:hover {
+    border-color: color-mix(in srgb, var(--primary) 65%, transparent);
+  }
+  .spotlight-card--lift {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .spotlight-card--lift:hover {
+    transform: translateY(-5px);
+  }
+  .spotlight-card-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+      280px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      color-mix(in srgb, var(--primary) 18%, transparent),
+      transparent 70%
+    );
+  }
+  .spotlight-card:hover .spotlight-card-glow {
+    opacity: 1;
+  }
+
+  /* Aurora blob — 2 khối gradient tròn mờ trôi chậm phía sau nội dung hero, tạo chiều sâu
+   * (kỹ thuật phổ biến ở landing page AI/SaaS tối màu 2026: Attio, Huly...). `animation-play-state:
+   * paused` thay vì chỉ giảm duration khi prefers-reduced-motion — animation lặp vô hạn nếu chỉ
+   * rút duration xuống ~0 sẽ nháy liên tục thay vì đứng yên, khác với animation 1 lần (Reveal). */
+  .aurora-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .aurora-blob-a {
+    animation: aurora-drift-a 16s ease-in-out infinite;
+  }
+  .aurora-blob-b {
+    animation: aurora-drift-b 20s ease-in-out infinite;
+  }
+  @keyframes aurora-drift-a {
+    0%, 100% { transform: translate(-8%, -6%) scale(1); }
+    50% { transform: translate(6%, 8%) scale(1.15); }
+  }
+  @keyframes aurora-drift-b {
+    0%, 100% { transform: translate(8%, 4%) scale(1.05); }
+    50% { transform: translate(-6%, -10%) scale(0.9); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-blob-a, .aurora-blob-b {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Shimmer sweep trên chữ gradient tiêu đề — 1 vệt sáng trắng lướt qua định kỳ, KHÔNG thay
+   * màu gốc. Kỹ thuật: 2 lớp background chồng nhau (lớp vệt sáng di chuyển + lớp gradient
+   * thương hiệu đứng yên), cùng bị background-clip:text cắt theo chữ — nếu chỉ dùng 1 class
+   * ghi đè background-image của GRADIENT_TEXT thì mất màu gốc, chỉ còn vệt sáng trên nền trong
+   * suốt. Dừng hẳn (không chỉ chậm lại) khi prefers-reduced-motion, tránh nháy liên tục. */
+  .text-shimmer-gradient {
+    background-image:
+      linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.9) 50%, transparent 65%),
+      linear-gradient(to right, #60a5fa, #c084fc);
+    background-size: 250% 100%, 100% 100%;
+    background-position: 200% 0, 0 0;
+    background-repeat: no-repeat, no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: text-shimmer-sweep 7s ease-in-out infinite;
+  }
+  @keyframes text-shimmer-sweep {
+    0%, 20% { background-position: 200% 0, 0 0; }
+    60%, 100% { background-position: -100% 0, 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .text-shimmer-gradient {
+      animation-play-state: paused;
+    }
+  }
+
+  /* Typography cho nội dung bài viết Blog (`BlogPostContent`, render qua dangerouslySetInnerHTML
+   * — HTML thô do Admin soạn, migration 0034) — dự án không cài @tailwindcss/typography nên tự
+   * style scoped bằng class cha, dùng đúng token màu/spacing đã có, không màu literal mới. */
+  .blog-content {
+    @apply text-sm sm:text-base text-foreground leading-relaxed;
+  }
+  .blog-content > * + * {
+    @apply mt-4;
+  }
+  .blog-content h2 {
+    @apply text-xl sm:text-2xl font-bold text-foreground mt-10 scroll-mt-24;
+  }
+  .blog-content h3 {
+    @apply text-lg font-bold text-foreground mt-8 scroll-mt-24;
+  }
+  .blog-content p {
+    @apply leading-relaxed;
+  }
+  .blog-content a {
+    @apply text-primary underline underline-offset-2 hover:text-primary/80 transition-colors;
+  }
+  .blog-content ul {
+    @apply list-disc pl-5 space-y-1.5;
+  }
+  .blog-content ol {
+    @apply list-decimal pl-5 space-y-1.5;
+  }
+  .blog-content blockquote {
+    @apply border-l-2 border-primary/40 pl-4 text-muted-foreground italic;
+  }
+  .blog-content code {
+    @apply font-mono text-xs bg-muted/40 border border-border rounded px-1.5 py-0.5;
+  }
+  .blog-content pre {
+    @apply font-mono text-xs bg-muted/40 border border-border rounded-lg p-4 overflow-x-auto;
+  }
+  .blog-content pre code {
+    @apply bg-transparent border-none p-0;
+  }
+  .blog-content img {
+    @apply rounded-xl border border-border w-full h-auto;
+  }
+  .blog-content hr {
+    @apply border-border my-8;
+  }
+
+  /* Placeholder cho PostContentEditor (Tiptap, admin blog) — extension `Placeholder` chỉ gắn
+   * class `is-empty` + `data-placeholder` lên node rỗng trong DOM sống của editor, KHÔNG bao giờ
+   * lọt vào chuỗi HTML lưu lại (`editor.getHTML()`) nên an toàn khi tái dùng `.blog-content` làm
+   * class hiển thị cho cả editor lẫn bài viết thật đã xuất bản. */
+  .blog-content .is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    @apply text-muted-foreground/60;
+  }
+}
